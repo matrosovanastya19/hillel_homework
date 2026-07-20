@@ -1,1 +1,3 @@
 this is first txt file. oooooo.
+Add the text for my_second_git.
+
