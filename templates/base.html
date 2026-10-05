@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Книжкова полиця{% endblock %}</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f4ece1;
+            color: #2b2b2b;
+        }
+        header {
+            background-color: #3b2f2f;
+            color: #f4ece1;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid #8b5a2b;
+        }
+        nav {
+            background-color: #8b5a2b;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+            font-style: italic;
+        }
+        .container {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 40px;
+            background-color: #faf6f0;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Класична Література</h1>
+    </header>
+    <nav>
+        <a href="/">Головна</a>
+        <a href="/books">Список книг</a>
+        <a href="/about">Про автора</a>
+    </nav>
+
+    <div class="container">
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
