@@ -149,3 +149,7 @@ LOGOUT_REDIRECT_URL = '/'
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+CART_SESSION_ID = 'cart'
+STRIPE_PUBLIC_KEY = os.environ.get('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
