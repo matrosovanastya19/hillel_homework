@@ -9,4 +9,8 @@ urlpatterns = [
     path('book/add/', views.BookCreateView.as_view(), name='book_create'),
     path('book/<int:pk>/edit/', views.BookUpdateView.as_view(), name='book_update'),
     path('book/<int:pk>/delete/', views.BookDeleteView.as_view(), name='book_delete'),
+    path('order/create/', views.order_create, name='order_create'),
+    path('payment/process/', views.process_payment, name='process_payment'),
+    path('payment/success/', views.payment_success, name='payment_success'),
+    path('payment/cancel/', views.payment_cancel, name='payment_cancel'),
 ]

@@ -1,0 +1,6 @@
+<h2>Order Summary</h2>
+<p>Please confirm your order and proceed to payment.</p>
+<form action="." method="post">
+    {% csrf_token %}
+    <button type="submit">Pay with Stripe</button>
+</form>
