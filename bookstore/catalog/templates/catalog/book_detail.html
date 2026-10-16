@@ -1,13 +1,14 @@
 {% extends 'catalog/base.html' %}
+{% load i18n %}
 
 {% block content %}
     <h2>{{ book.title }}</h2>
-    <p><strong>Автор:</strong> {{ book.author }}</p>
-    <p><strong>Категорія:</strong> {{ book.category.name }}</p>
-    <p><strong>Ціна:</strong> {{ book.price }} грн</p>
+    <p><strong>{% trans "Автор:" %}</strong> {{ book.author }}</p>
+    <p><strong>{% trans "Категорія:" %}</strong> {{ book.category.name }}</p>
+    <p><strong>{% trans "Ціна:" %}</strong> {{ book.price }} {% trans "грн" %}</p>
     <p>{{ book.description }}</p>
 
-    <a href="{% url 'catalog:book_update' book.pk %}" class="btn btn-warning">Редагувати</a>
-    <a href="{% url 'catalog:book_delete' book.pk %}" class="btn btn-danger">Видалити</a>
-    <a href="{% url 'catalog:book_list' %}" class="btn btn-secondary">Назад</a>
+    <a href="{% url 'catalog:book_update' book.pk %}" class="btn btn-warning">{% trans "Редагувати" %}</a>
+    <a href="{% url 'catalog:book_delete' book.pk %}" class="btn btn-danger">{% trans "Видалити" %}</a>
+    <a href="{% url 'catalog:book_list' %}" class="btn btn-secondary">{% trans "Назад" %}</a>
 {% endblock %}

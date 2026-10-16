@@ -14,6 +14,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Book
+from django.shortcuts import render, get_object_or_404
+from .models import Book
+import asyncio
 
 class BookListView(ListView):
     model = Book
@@ -133,3 +136,10 @@ def payment_success(request):
 
 def payment_cancel(request):
     return render(request, 'payment/cancel.html')
+async def book_list_async(request):
+    books = await Book.objects.all().alist()
+    return render(request, 'catalog/book_list.html', {'books': books})
+
+async def book_detail_async(request, book_id):
+    book = await Book.objects.aget(id=book_id)
+    return render(request, 'catalog/book_detail.html', {'book': book})
