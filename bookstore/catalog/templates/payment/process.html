@@ -1,6 +1,7 @@
-<h2>Order Summary</h2>
-<p>Please confirm your order and proceed to payment.</p>
+{% load i18n %}
+<h2>{% trans "Order Summary" %}</h2>
+<p>{% trans "Please confirm your order and proceed to payment." %}</p>
 <form action="." method="post">
     {% csrf_token %}
-    <button type="submit">Pay with Stripe</button>
+    <button type="submit">{% trans "Pay with Stripe" %}</button>
 </form>

@@ -1,7 +1,8 @@
-<h2>Ordering</h2>
+{% load i18n %}
+<h2>{% trans "Ordering" %}</h2>
 <form method="post">
     {% csrf_token %}
-    <label>Name: <input type="text" name="first_name" required></label><br><br>
-    <label>Email: <input type="email" name="email" required></label><br><br>
-    <button type="submit">Checkout and proceed to payment</button>
+    <label>{% trans "Name:" %} <input type="text" name="first_name" required></label><br><br>
+    <label>{% trans "Email:" %} <input type="email" name="email" required></label><br><br>
+    <button type="submit">{% trans "Checkout and proceed to payment" %}</button>
 </form>

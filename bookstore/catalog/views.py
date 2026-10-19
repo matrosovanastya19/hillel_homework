@@ -2,60 +2,81 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
 from django.core.mail import send_mail
 from django.conf import settings
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.views import LoginView
 import stripe
+import asyncio
 
 from .cart import Cart
 from .models import Order, OrderItem, Book
+from .forms import CustomUserCreationForm
 
-from django.shortcuts import render
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-# Create your views here.
-from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Book
 
 class BookListView(ListView):
+    """
+    Displays a paginated list of books.
+    Optimized with select_related to prevent N+1 query problems.
+    """
     model = Book
     template_name = 'catalog/book_list.html'
     context_object_name = 'books'
     paginate_by = 3
+    queryset = Book.objects.select_related('category').all().order_by('-id')
+
 
 class BookDetailView(DetailView):
+    """Shows detailed information about a specific book."""
     model = Book
     template_name = 'catalog/book_detail.html'
     context_object_name = 'book'
 
+
 class BookCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    """Allows authorized users with permissions to add a new book."""
     model = Book
     template_name = 'catalog/book_form.html'
     fields = ['title', 'author', 'price', 'description', 'stock', 'category']
     success_url = reverse_lazy('catalog:book_list')
     permission_required = 'catalog.add_book'
 
+
 class BookUpdateView(UpdateView):
+    """Allows users to update existing book details."""
     model = Book
     template_name = 'catalog/book_form.html'
     fields = ['title', 'author', 'price', 'description', 'stock', 'category']
     success_url = reverse_lazy('catalog:book_list')
 
+
 class BookDeleteView(DeleteView):
+    """Allows users to delete a book with confirmation."""
     model = Book
     template_name = 'catalog/book_confirm_delete.html'
     success_url = reverse_lazy('catalog:book_list')
 
-from django.urls import reverse_lazy
+
 from django.views.generic import CreateView
-from .forms import CustomUserCreationForm
+
 
 class RegisterView(CreateView):
+    """Handles new user registration."""
     form_class = CustomUserCreationForm
     template_name = 'catalog/register.html'
     success_url = reverse_lazy('login')
 
 
 def order_create(request):
+    """
+    Handles order creation from cart items and redirects to payment.
+    Includes validation for empty carts.
+    """
     cart = Cart(request)
+
+    if len(cart) == 0:
+        return redirect('catalog:book_list')
+
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         email = request.POST.get('email')
@@ -78,7 +99,7 @@ def order_create(request):
                 f'Hello, {order.first_name}! Your order №{order.id} successfully created.',
                 'noreply@bookstore.com',
                 [order.email],
-                fail_silently=False,
+                fail_silently=True,
             )
 
             request.session['order_id'] = order.id
@@ -88,21 +109,20 @@ def order_create(request):
 
 
 def process_payment(request):
+    """
+    Initiates a Stripe checkout session for the current order.
+    """
     stripe.api_key = settings.STRIPE_SECRET_KEY
     order_id = request.session.get('order_id')
+
+    if not order_id:
+        return redirect('catalog:book_list')
+
     order = get_object_or_404(Order, id=order_id)
 
     if request.method == 'POST':
         success_url = request.build_absolute_uri(reverse('catalog:payment_success'))
         cancel_url = request.build_absolute_uri(reverse('catalog:payment_cancel'))
-
-        session_data = {
-            'mode': 'payment',
-            'client_reference_id': order.id,
-            'success_url': success_url,
-            'cancel_url': cancel_url,
-            'line_items': []
-        }
 
         line_items = [{
             'price_data': {
@@ -110,7 +130,7 @@ def process_payment(request):
                 'product_data': {
                     'name': 'Тестова книга Python',
                 },
-                'unit_amount': 1500,  # Це 15.00 USD (Stripe завжди рахує в центах)
+                'unit_amount': 1500,
             },
             'quantity': 1,
         }]
@@ -120,16 +140,32 @@ def process_payment(request):
             'success_url': success_url,
             'cancel_url': cancel_url,
             'line_items': line_items,
-            'managed_payments': {
-                'enabled': False,
-            },
         }
         session = stripe.checkout.Session.create(**session_data)
         return redirect(session.url, code=303)
 
     return render(request, 'payment/process.html', locals())
+
+
 def payment_success(request):
+    """Renders the payment success page."""
     return render(request, 'payment/success.html')
 
+
 def payment_cancel(request):
+    """Renders the payment cancellation page."""
     return render(request, 'payment/cancel.html')
+
+
+# 1. Асинхронний список
+async def book_list_async(request):
+    """Async view to fetch and display list of books."""
+    books = await Book.objects.all().alist()
+    return render(request, 'catalog/book_list.html', {'books': books})
+
+
+# 2. Асинхронні деталі
+async def book_detail_async(request, book_id):
+    """Async view to fetch and display a specific book."""
+    book = await Book.objects.aget(id=book_id)
+    return render(request, 'catalog/book_detail.html', {'book': book})

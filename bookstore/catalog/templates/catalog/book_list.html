@@ -1,7 +1,8 @@
 {% extends 'catalog/base.html' %}
+{% load i18n %}
 
 {% block content %}
-    <h2>Каталог книг</h2>
+    <h2>{% trans "Каталог книг" %}</h2>
     <div class="row">
         {% for book in books %}
             <div class="col-md-4 mb-3">
@@ -9,7 +10,7 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ book.title|upper }}</h5>
                         <p class="card-text">{{ book.author }}</p>
-                        <a href="{% url 'catalog:book_detail' book.pk %}" class="btn btn-primary">Детальніше</a>
+                        <a href="{% url 'catalog:book_detail' book.pk %}" class="btn btn-primary">{% trans "Детальніше" %}</a>
                     </div>
                 </div>
             </div>
@@ -19,11 +20,11 @@
     {% if is_paginated %}
         <ul class="pagination mt-4">
             {% if page_obj.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Попередня</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">{% trans "Попередня" %}</a></li>
             {% endif %}
             <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
             {% if page_obj.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Наступна</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">{% trans "Наступна" %}</a></li>
             {% endif %}
         </ul>
     {% endif %}

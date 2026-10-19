@@ -1,0 +1,174 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 13:49+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
+"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
+"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
+"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+
+#: bookstore/settings.py:132
+msgid "Ukrainian"
+msgstr "Українська"
+
+#: bookstore/settings.py:133
+msgid "English"
+msgstr "Англійська"
+
+#: catalog/models.py:15
+msgid "Title"
+msgstr "Назва"
+
+#: catalog/models.py:16
+msgid "Description"
+msgstr "Опис"
+
+#: catalog/templates/catalog/base.html:6
+msgid "Книжковий магазин"
+msgstr "Книжковий магазин"
+
+#: catalog/templates/catalog/base.html:12
+msgid "Класична Література"
+msgstr "Класична Література"
+
+#: catalog/templates/catalog/base.html:16
+msgid "Додати книгу"
+msgstr "Додати книгу"
+
+#: catalog/templates/catalog/book_confirm_delete.html:6
+msgid "Ви впевнені?"
+msgstr "Ви впевнені?"
+
+#: catalog/templates/catalog/book_confirm_delete.html:7
+#, python-format
+msgid "Ви дійсно хочете видалити книгу \"%(title)s\"?"
+msgstr "Ви дійсно хочете видалити книгу \"%(title)s\"?"
+
+#: catalog/templates/catalog/book_confirm_delete.html:10
+msgid "Так, видалити"
+msgstr "Так, видалити"
+
+#: catalog/templates/catalog/book_confirm_delete.html:11
+#: catalog/templates/catalog/book_form.html:10
+msgid "Скасувати"
+msgstr "Скасувати"
+
+#: catalog/templates/catalog/book_detail.html:6
+msgid "Автор:"
+msgstr "Автор:"
+
+#: catalog/templates/catalog/book_detail.html:7
+msgid "Категорія:"
+msgstr "Категорія:"
+
+#: catalog/templates/catalog/book_detail.html:8
+msgid "Ціна:"
+msgstr "Ціна:"
+
+#: catalog/templates/catalog/book_detail.html:8
+msgid "грн"
+msgstr "грн"
+
+#: catalog/templates/catalog/book_detail.html:11
+#: catalog/templates/catalog/book_form.html:5
+msgid "Редагувати"
+msgstr "Редагувати"
+
+#: catalog/templates/catalog/book_detail.html:12
+msgid "Видалити"
+msgstr "Видалити"
+
+#: catalog/templates/catalog/book_detail.html:13
+msgid "Назад"
+msgstr "Назад"
+
+#: catalog/templates/catalog/book_form.html:5
+msgid "Додати"
+msgstr "Додати"
+
+#: catalog/templates/catalog/book_form.html:5
+msgid "книгу"
+msgstr "книгу"
+
+#: catalog/templates/catalog/book_form.html:9
+msgid "Зберегти"
+msgstr "Зберегти"
+
+#: catalog/templates/catalog/book_list.html:5
+msgid "Каталог книг"
+msgstr "Каталог книг"
+
+#: catalog/templates/catalog/book_list.html:13
+msgid "Детальніше"
+msgstr "Детальніше"
+
+#: catalog/templates/catalog/book_list.html:23
+msgid "Попередня"
+msgstr "Попередня"
+
+#: catalog/templates/catalog/book_list.html:27
+msgid "Наступна"
+msgstr "Наступна"
+
+#: catalog/templates/orders/create.html:2
+msgid "Ordering"
+msgstr "Оформлення замовлення"
+
+#: catalog/templates/orders/create.html:5
+msgid "Name:"
+msgstr "Ім'я:"
+
+#: catalog/templates/orders/create.html:6
+msgid "Email:"
+msgstr "Електронна пошта:"
+
+#: catalog/templates/orders/create.html:7
+msgid "Checkout and proceed to payment"
+msgstr "Оформити та перейти до оплати"
+
+#: catalog/templates/payment/cancel.html:2
+msgid "Payment Cancelled"
+msgstr "Оплату скасовано"
+
+#: catalog/templates/payment/cancel.html:3
+msgid ""
+"There was an issue with your payment, or you cancelled it. Please try again."
+msgstr ""
+"Виникла проблема з вашим платежем, або ви його скасували. Будь ласка, спробуйте ще раз."
+
+#: catalog/templates/payment/process.html:2
+msgid "Order Summary"
+msgstr "Підсумок замовлення"
+
+#: catalog/templates/payment/process.html:3
+msgid "Please confirm your order and proceed to payment."
+msgstr "Будь ласка, підтвердіть своє замовлення та перейдіть до оплати."
+
+#: catalog/templates/payment/process.html:6
+msgid "Pay with Stripe"
+msgstr "Оплатити через Stripe"
+
+#: catalog/templates/payment/success.html:2
+msgid "Thank you for your order!"
+msgstr "Дякуємо за ваше замовлення!"
+
+#: catalog/templates/payment/success.html:3
+msgid ""
+"Your payment was successful. We have sent a confirmation email to your "
+"address."
+msgstr ""
+"Ваша оплата пройшла успішно. Ми надіслали електронний лист із підтвердженням на вашу адресу."

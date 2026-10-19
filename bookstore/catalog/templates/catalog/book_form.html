@@ -1,11 +1,12 @@
 {% extends 'catalog/base.html' %}
+{% load i18n %}
 
 {% block content %}
-    <h2>{% if object %}Редагувати{% else %}Додати{% endif %} книгу</h2>
+    <h2>{% if object %}{% trans "Редагувати" %}{% else %}{% trans "Додати" %}{% endif %} {% trans "книгу" %}</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Зберегти</button>
-        <a href="{% url 'catalog:book_list' %}" class="btn btn-secondary">Скасувати</a>
+        <button type="submit" class="btn btn-success">{% trans "Зберегти" %}</button>
+        <a href="{% url 'catalog:book_list' %}" class="btn btn-secondary">{% trans "Скасувати" %}</a>
     </form>
 {% endblock %}
