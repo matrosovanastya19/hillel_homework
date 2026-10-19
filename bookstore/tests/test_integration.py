@@ -5,7 +5,7 @@ from django.core import mail
 from catalog.models import Book, Order, CustomUser
 from django.contrib.auth.models import Permission
 
-
+# Generated with AI, reviewed and modified
 @pytest.mark.django_db
 class TestUserFlows:
     def test_user_login_flow(self, client, user):

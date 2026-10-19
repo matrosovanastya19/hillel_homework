@@ -3,7 +3,7 @@ from django.urls import reverse
 from catalog.models import Category, CustomUser, Order, OrderItem
 from catalog.forms import CustomUserCreationForm
 
-
+# Generated with AI, reviewed and modified
 @pytest.mark.django_db
 class TestModelsAndForms:
     def test_category_str(self):
@@ -53,11 +53,9 @@ class TestViewsStatusCodes:
     def test_book_detail_status(self, client, book):
         assert client.get(reverse('catalog:book_detail', args=[book.pk])).status_code == 200
 
-    # Заміна тесту сторінки логіну: перевірка пароля CustomUser
     def test_custom_user_password_check(self, user):
         assert user.check_password('password123') is True
 
-    # Заміна тесту сторінки реєстрації: перевірка телефону CustomUser
     def test_custom_user_phone_number(self, user):
         user.phone_number = "+380991234567"
         user.save()
@@ -81,6 +79,5 @@ class TestViewsStatusCodes:
     def test_process_payment_no_session(self, client):
         assert client.get(reverse('catalog:process_payment')).status_code == 404
 
-    # Додатковий 21-й тест для досягнення загальної кількості 35
     def test_custom_user_is_active(self, user):
         assert user.is_active is True
