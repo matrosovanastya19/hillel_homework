@@ -74,10 +74,10 @@ def order_create(request):
     """
     cart = Cart(request)
 
-    if len(cart) == 0:
-        return redirect('catalog:book_list')
-
     if request.method == 'POST':
+        if len(cart.cart) == 0:
+            return redirect('catalog:book_list')
+
         first_name = request.POST.get('first_name')
         email = request.POST.get('email')
 
