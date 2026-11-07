@@ -1,8 +1,9 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Книжкова полиця{% endblock %}</title>
+    <title>{% block title %}{% trans "Книжкова полиця" %}{% endblock %}</title>
     <style>
         body {
             font-family: 'Georgia', serif;
@@ -43,16 +44,15 @@
 </head>
 <body>
     <header>
-        <h1>Класична Література</h1>
+        <h1>{% trans "Класична Література" %}</h1>
     </header>
     <nav>
-        <a href="/">Головна</a>
-        <a href="/books">Список книг</a>
-        <a href="/about">Про автора</a>
+        <a href="/">{% trans "Головна" %}</a>
+        <a href="/books">{% trans "Список книг" %}</a>
+        <a href="/about">{% trans "Про автора" %}</a>
     </nav>
 
     <div class="container">
-
         {% block content %}{% endblock %}
     </div>
 </body>

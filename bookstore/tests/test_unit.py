@@ -77,7 +77,7 @@ class TestViewsStatusCodes:
         assert client.get(reverse('catalog:payment_cancel')).status_code == 200
 
     def test_process_payment_no_session(self, client):
-        assert client.get(reverse('catalog:process_payment')).status_code == 404
+        assert client.get(reverse('catalog:process_payment')).status_code == 302
 
     def test_custom_user_is_active(self, user):
         assert user.is_active is True

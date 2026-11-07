@@ -13,12 +13,14 @@ from .cart import Cart
 from .models import Order, OrderItem, Book
 from .forms import CustomUserCreationForm
 
+from django.core.cache import cache
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
+
+# View cache: Кешуємо всю сторінку списку книг на 15 хвилин
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class BookListView(ListView):
-    """
-    Displays a paginated list of books.
-    Optimized with select_related to prevent N+1 query problems.
-    """
     model = Book
     template_name = 'catalog/book_list.html'
     context_object_name = 'books'
@@ -27,10 +29,21 @@ class BookListView(ListView):
 
 
 class BookDetailView(DetailView):
-    """Shows detailed information about a specific book."""
     model = Book
     template_name = 'catalog/book_detail.html'
     context_object_name = 'book'
+
+    def get_object(self, queryset=None):
+        # Low-level cache: Кешуємо конкретну книгу за її ID
+        book_id = self.kwargs.get('pk')
+        cache_key = f'book_detail_{book_id}'
+        book = cache.get(cache_key)
+
+        if not book:
+            book = super().get_object(queryset)
+            cache.set(cache_key, book, 60 * 60)  # Кешуємо на 1 годину
+
+        return book
 
 
 class BookCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -74,10 +87,10 @@ def order_create(request):
     """
     cart = Cart(request)
 
-    if len(cart) == 0:
-        return redirect('catalog:book_list')
-
     if request.method == 'POST':
+        if len(cart.cart) == 0:
+            return redirect('catalog:book_list')
+
         first_name = request.POST.get('first_name')
         email = request.POST.get('email')
 
