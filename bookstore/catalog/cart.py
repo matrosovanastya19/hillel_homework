@@ -2,6 +2,7 @@ from decimal import Decimal
 from django.conf import settings
 from catalog.models import Book
 
+
 class Cart:
     def __init__(self, request):
         self.session = request.session
@@ -13,11 +14,11 @@ class Cart:
     def add(self, book, quantity=1, override_quantity=False):
         book_id = str(book.id)
         if book_id not in self.cart:
-            self.cart[book_id] = {'quantity': 0, 'price': str(book.price)}
+            self.cart[book_id] = {"quantity": 0, "price": str(book.price)}
         if override_quantity:
-            self.cart[book_id]['quantity'] = quantity
+            self.cart[book_id]["quantity"] = quantity
         else:
-            self.cart[book_id]['quantity'] += quantity
+            self.cart[book_id]["quantity"] += quantity
         self.save()
 
     def remove(self, book):
