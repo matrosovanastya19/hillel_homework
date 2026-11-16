@@ -1,6 +1,6 @@
 from .base import *
 import os
-import dj_database_url 
+import dj_database_url
 
 DEBUG = False
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
@@ -9,6 +9,14 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 DATABASES = {
     'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.getenv("REDIS_URL", "redis://redis:6379/1"),
+    }
+}
+
+CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
 
 # Security Headers
 SECURE_BROWSER_XSS_FILTER = True
