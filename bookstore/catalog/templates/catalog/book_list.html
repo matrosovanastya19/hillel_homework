@@ -1,10 +1,14 @@
 {% extends 'catalog/base.html' %}
 {% load i18n %}
+{% load cache %} <!-- 1. Обов'язково завантажуємо модуль кешування -->
 
 {% block content %}
     <h2>{% trans "Каталог книг" %}</h2>
     <div class="row">
         {% for book in books %}
+            <!-- 2. Починаємо кешувати цей блок на 1800 секунд (30 хв).
+                 'book_item' - назва кешу, book.id - унікальний ключ для кожної книги -->
+            {% cache 1800 book_item book.id %}
             <div class="col-md-4 mb-3">
                 <div class="card">
                     <div class="card-body">
@@ -14,6 +18,7 @@
                     </div>
                 </div>
             </div>
+            {% endcache %} <!-- 3. Закриваємо тег кешування -->
         {% endfor %}
     </div>
 

@@ -4,6 +4,7 @@ from django.db import models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
@@ -11,19 +12,24 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+
 class Book(models.Model):
-    title = models.CharField(_('Title'), max_length=200)
-    description = models.TextField(_('Description'))
+    title = models.CharField(_("Title"), max_length=200)
+    description = models.TextField(_("Description"))
     author = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField(default=0)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='books')
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name="books"
+    )
 
     def __str__(self):
         return self.title
 
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
 
 class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
@@ -44,13 +50,13 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
 
     # ОСЬ ТУТ: ми просто пишемо Book, і Django сам розуміє, про який клас мова, бо він є вище у цьому ж файлі
-    book = models.ForeignKey(Book, related_name='order_items', on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, related_name="order_items", on_delete=models.CASCADE)
 
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
 
     def get_cost(self):
-        return self.price * self.quantity 
+        return self.price * self.quantity
