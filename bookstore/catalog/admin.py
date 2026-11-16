@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order, OrderItem
+from .models import Order, OrderItem, Book
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
@@ -10,3 +10,8 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'first_name', 'email', 'paid', 'created']
     list_filter = ['paid', 'created']
     inlines = [OrderItemInline]
+
+@admin.register(Book)
+class BookAdmin(admin.ModelAdmin):
+    list_display = ['title', 'author', 'price']
+    
