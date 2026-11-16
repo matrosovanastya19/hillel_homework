@@ -36,12 +36,18 @@ router.register(r'books', BookViewSet, basename='api-book')
 router.register(r'orders', OrderViewSet, basename='api-order')
 router.register(r'cart', CartViewSet, basename='api-cart')
 
+from django.http import JsonResponse
+from django.urls import path
+
+def health_check(request):
+    return JsonResponse({"status": "ok"})
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', auth_views.LoginView.as_view(template_name='catalog/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
-
+    path('health/', health_check, name='health_check'),
     # --- МАРШРУТИ REST API ---
     path('api/', include(router.urls)),
 
