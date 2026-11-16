@@ -19,11 +19,13 @@ jobs:
 
     - name: Install dependencies
       run: |
+        cd bookstore
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Lint with Flake8 and Black
       run: |
+        cd bookstore
         black --check .
         flake8 . --max-line-length=88
 
