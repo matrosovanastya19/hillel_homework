@@ -11,6 +11,12 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from django.contrib import messages
+from .services.warehouse_client import (
+    InsufficientStockError,
+    WarehouseClient,
+    WarehouseError,
+)
 from django.contrib.auth.views import LoginView
 import stripe
 import asyncio
@@ -104,32 +110,77 @@ def order_create(request):
         first_name = request.POST.get("first_name")
         email = request.POST.get("email")
 
-        with transaction.atomic():
-            order = Order.objects.create(first_name=first_name, email=email)
-            for item in cart.cart.values():
-                book = Book.objects.get(id=item["book_id"])
-                OrderItem.objects.create(
-                    order=order,
-                    book=book,
-                    price=item["price"],
-                    quantity=item["quantity"],
+        try:
+            with transaction.atomic():
+                order = Order.objects.create(
+                    user=request.user if request.user.is_authenticated else None,
+                    first_name=first_name,
+                    email=email,
                 )
+                warehouse_items = []
+                for item in cart.cart.values():
+                    book = Book.objects.get(id=item["book_id"])
+                    OrderItem.objects.create(
+                        order=order,
+                        book=book,
+                        price=item["price"],
+                        quantity=item["quantity"],
+                    )
+                    warehouse_items.append(
+                        {"book_id": book.id, "quantity": item["quantity"]}
+                    )
 
-            cart.clear()
-
-            send_mail(
-                "Order placed",
-                f"Hello, {order.first_name}! Your order №{order.id} successfully created.",
-                "noreply@bookstore.com",
-                [order.email],
-                fail_silently=True,
+                WarehouseClient().reserve_books(order.id, warehouse_items)
+        except InsufficientStockError as exc:
+            messages.error(request, str(exc))
+            return render(
+                request, "orders/create.html", {"cart": cart, "error": str(exc)}
+            )
+        except WarehouseError:
+            messages.error(
+                request,
+                "Warehouse service is temporarily unavailable. Try again later.",
+            )
+            return render(
+                request,
+                "orders/create.html",
+                {
+                    "cart": cart,
+                    "error": "Warehouse service is temporarily unavailable.",
+                },
             )
 
-            request.session["order_id"] = order.id
-            return redirect("catalog:process_payment")
+        cart.clear()
+        request.session["order_id"] = order.id
+
+        send_mail(
+            subject=f"Order #{order.id} confirmation",
+            message=f"Dear {order.first_name}, your order #{order.id} has been created.",
+            from_email=getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@bookstore.com"),
+            recipient_list=[order.email],
+            fail_silently=True,
+        )
+
+        stripe.api_key = getattr(settings, "STRIPE_SECRET_KEY", "")
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[
+                {
+                    "price_data": {
+                        "currency": "usd",
+                        "product_data": {"name": f"Order #{order.id}"},
+                        "unit_amount": int(order.get_total_cost() * 100),
+                    },
+                    "quantity": 1,
+                }
+            ],
+            mode="payment",
+            success_url=request.build_absolute_uri(reverse("catalog:payment_success")),
+            cancel_url=request.build_absolute_uri(reverse("catalog:payment_cancel")),
+        )
+        return redirect(checkout_session.url)
 
     return render(request, "orders/create.html", {"cart": cart})
-
 
 def process_payment(request):
     """

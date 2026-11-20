@@ -8,7 +8,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "bookstore_db",
         "USER": "postgres",
-        "PASSWORD": "postgrespassword",
+        "PASSWORD": "postgres",
         "HOST": "db",
         "PORT": "5432",
     }

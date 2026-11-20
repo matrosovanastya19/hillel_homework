@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Order, OrderItem, Book, Category
+from django.contrib.auth.admin import UserAdmin
+from .models import Order, OrderItem, Book, Category, CustomUser
 
 
 class OrderItemInline(admin.TabularInline):
@@ -22,3 +23,14 @@ class BookAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(CustomUser)
+class CustomUserAdmin(UserAdmin):
+    list_display = ("username", "email", "phone_number", "is_staff", "is_active")
+    fieldsets = UserAdmin.fieldsets + (
+        ("Additional Info", {"fields": ("phone_number",)}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        ("Additional Info", {"fields": ("phone_number",)}),
+    )

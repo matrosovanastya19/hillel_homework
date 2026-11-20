@@ -68,6 +68,12 @@ class TestUserFlows:
 
 @pytest.mark.django_db
 class TestCheckoutFlow:
+    @pytest.fixture(autouse=True)
+    def mock_warehouse(self, monkeypatch):
+        monkeypatch.setattr(
+            "catalog.views.WarehouseClient.reserve_books",
+            lambda *args, **kwargs: {"status": "reserved"},
+        )
     def test_process_payment_with_session(self, client, order):
         session = client.session
         session["order_id"] = order.id

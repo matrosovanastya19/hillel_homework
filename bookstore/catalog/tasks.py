@@ -38,3 +38,17 @@ def generate_report():
         for book in books:
             writer.writerow([book.id, book.title, book.stock, book.price])
     return "Report generated."
+
+
+from celery import shared_task
+from .services.warehouse_client import WarehouseClient, WarehouseError
+
+
+@shared_task(
+    bind=True,
+    autoretry_for=(WarehouseError,),
+    retry_backoff=True,
+    max_retries=3,
+)
+def release_warehouse_stock_task(self, order_id: int):
+    WarehouseClient().release_books(order_id)
