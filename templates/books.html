@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Список книг - Класична Література{% endblock %}
+{% block title %}{% trans "Список книг" %} - {% trans "Класична Література" %}{% endblock %}
 
 {% block content %}
-    <h2>Зміст: Каталог книг</h2>
+    <h2>{% trans "Зміст: Каталог книг" %}</h2>
     <ul>
         {% for book in books_list %}
             <li style="margin-bottom: 10px;">
-                <strong>«{{ book.title }}»</strong> — <em>{{ book.author }}</em> ({{ book.year }} рік)
+                <strong>«{{ book.title }}»</strong> — <em>{{ book.author }}</em> ({% blocktrans with year=book.year %}{{ year }} рік{% endblocktrans %})
             </li>
         {% endfor %}
     </ul>

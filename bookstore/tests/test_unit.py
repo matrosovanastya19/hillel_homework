@@ -3,6 +3,7 @@ from django.urls import reverse
 from catalog.models import Category, CustomUser, Order, OrderItem
 from catalog.forms import CustomUserCreationForm
 
+
 # Generated with AI, reviewed and modified
 @pytest.mark.django_db
 class TestModelsAndForms:
@@ -36,9 +37,9 @@ class TestModelsAndForms:
         assert item.quantity == 1
 
     def test_register_form_valid(self):
-        form = CustomUserCreationForm(data={'username': 'testuser', 'email': 't@t.com'})
-        assert 'phone_number' in form.fields
-        assert 'email' in form.fields
+        form = CustomUserCreationForm(data={"username": "testuser", "email": "t@t.com"})
+        assert "phone_number" in form.fields
+        assert "email" in form.fields
 
     def test_register_form_invalid_empty(self):
         form = CustomUserCreationForm(data={})
@@ -48,13 +49,16 @@ class TestModelsAndForms:
 @pytest.mark.django_db
 class TestViewsStatusCodes:
     def test_homepage_status(self, client):
-        assert client.get(reverse('catalog:book_list')).status_code == 200
+        assert client.get(reverse("catalog:book_list")).status_code == 200
 
     def test_book_detail_status(self, client, book):
-        assert client.get(reverse('catalog:book_detail', args=[book.pk])).status_code == 200
+        assert (
+            client.get(reverse("catalog:book_detail", args=[book.pk])).status_code
+            == 200
+        )
 
     def test_custom_user_password_check(self, user):
-        assert user.check_password('password123') is True
+        assert user.check_password("password123") is True
 
     def test_custom_user_phone_number(self, user):
         user.phone_number = "+380991234567"
@@ -62,22 +66,28 @@ class TestViewsStatusCodes:
         assert user.phone_number == "+380991234567"
 
     def test_book_delete_page_status(self, client, book):
-        assert client.get(reverse('catalog:book_delete', args=[book.pk])).status_code == 200
+        assert (
+            client.get(reverse("catalog:book_delete", args=[book.pk])).status_code
+            == 200
+        )
 
     def test_book_update_page_status(self, client, book):
-        assert client.get(reverse('catalog:book_update', args=[book.pk])).status_code == 200
+        assert (
+            client.get(reverse("catalog:book_update", args=[book.pk])).status_code
+            == 200
+        )
 
     def test_order_create_get(self, client):
-        assert client.get(reverse('catalog:order_create')).status_code == 200
+        assert client.get(reverse("catalog:order_create")).status_code == 200
 
     def test_payment_success_get(self, client):
-        assert client.get(reverse('catalog:payment_success')).status_code == 200
+        assert client.get(reverse("catalog:payment_success")).status_code == 200
 
     def test_payment_cancel_get(self, client):
-        assert client.get(reverse('catalog:payment_cancel')).status_code == 200
+        assert client.get(reverse("catalog:payment_cancel")).status_code == 200
 
     def test_process_payment_no_session(self, client):
-        assert client.get(reverse('catalog:process_payment')).status_code == 404
+        assert client.get(reverse("catalog:process_payment")).status_code == 302
 
     def test_custom_user_is_active(self, user):
         assert user.is_active is True

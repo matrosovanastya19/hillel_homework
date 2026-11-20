@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Головна - Класична Література{% endblock %}
+{% block title %}{% trans "Головна" %} - {% trans "Класична Література" %}{% endblock %}
 
-{%block content%}
-<p> Це сайт про вічну світову класику.Невмирущий скарб людства.</p>
-{% endblock%}
+{% block content %}
+<p>{% trans "Це сайт про вічну світову класику. Невмирущий скарб людства." %}</p>
+{% endblock %}

@@ -1,0 +1,125 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: bookstore_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - bookstore_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bookstore_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  warehouse_db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: warehouse_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - warehouse_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d warehouse_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  web:
+    build: ./bookstore
+    command: sh -c "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn bookstore.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - ./bookstore:/app
+      - bookstore_static:/app/staticfiles
+    env_file:
+      - ./bookstore/.env
+    environment:
+      - DB_HOST=db
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - WAREHOUSE_SERVICE_URL=http://warehouse-web:8001
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      warehouse-web:
+        condition: service_started
+
+  bookstore_celery:
+    build: ./bookstore
+    command: celery -A bookstore worker --loglevel=info
+    volumes:
+      - ./bookstore:/app
+    env_file:
+      - ./bookstore/.env
+    environment:
+      - DB_HOST=db
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - WAREHOUSE_SERVICE_URL=http://warehouse-web:8001
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  warehouse-web:
+    build: ./warehouse
+    command: sh -c "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn warehouse_config.wsgi:application --bind 0.0.0.0:8001"
+    volumes:
+      - ./warehouse:/app
+      - warehouse_static:/app/staticfiles
+    env_file:
+      - ./warehouse/.env
+    environment:
+      - DB_HOST=warehouse_db
+      - REDIS_URL=redis://redis:6379/2
+      - CELERY_BROKER_URL=redis://redis:6379/3
+    depends_on:
+      warehouse_db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  warehouse_celery:
+    build: ./warehouse
+    command: celery -A warehouse_config worker --loglevel=info
+    volumes:
+      - ./warehouse:/app
+    env_file:
+      - ./warehouse/.env
+    environment:
+      - DB_HOST=warehouse_db
+      - REDIS_URL=redis://redis:6379/2
+      - CELERY_BROKER_URL=redis://redis:6379/3
+    depends_on:
+      warehouse_db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8000:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - bookstore_static:/app/bookstore_static:ro
+      - warehouse_static:/app/warehouse_static:ro
+    depends_on:
+      - web
+      - warehouse-web
+
+volumes:
+  bookstore_postgres_data:
+  warehouse_postgres_data:
+  bookstore_static:
+  warehouse_static:

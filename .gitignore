@@ -1,1 +1,7 @@
 **/.env
+bookstore/.env
+warehouse/.env
+__pycache__/
+*.pyc
+.venv/
+staticfiles/
